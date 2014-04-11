@@ -7,7 +7,7 @@
         <Logfilepath>C:/Users/magang/Documents/Logs/</Logfilepath>
         <Inputfile>IB_Orders_12.csv</Inputfile>
         <Inputfilepath>C:/Users/magang/Documents/Logs/</Inputfilepath>
-        <StartTime>17:15</StartTime>
+        <StartTime>20:23</StartTime>
         <EndTime>22:00</EndTime>
     </General>
     <EODTrading>
