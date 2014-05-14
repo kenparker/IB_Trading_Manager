@@ -3,11 +3,11 @@
 <config>
     <General>
         <TWSPort>7496</TWSPort>
-        <Logfile>Log_05_14_6</Logfile>
+        <Logfile>Log_04_28_6</Logfile>
         <Logfilepath>C:/Users/magang/Documents/Logs/</Logfilepath>
         <Inputfile>IB_Orders_12.csv</Inputfile>
         <Inputfilepath>C:/Users/magang/Documents/Logs/</Inputfilepath>
-        <StartTime>20:00</StartTime>
+        <StartTime>20:30</StartTime>
         <EndTime>22:00</EndTime>
     </General>
     <EODTrading>
