@@ -134,7 +134,7 @@ public class AutoEnvelope extends Indicator
 
     public void checkPeriod(int period)
     {
-        for (int i = this.qhsize - period; i < this.qhsize; i++) {
+        for (int i = this.qhsize - period - 1; i < this.qhsize; i++) {
 
             if (this.isNearEnvelope(i)) {
                 logNearEnvelope(i);

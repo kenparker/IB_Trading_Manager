@@ -42,7 +42,7 @@ public class AutoEnvelopeStrategy1 {
         envelope.calculate();
         
         //envelope.logEnvelFactor(0);
-        envelope.checkPeriod(10);
+        envelope.checkPeriod(0);
 
     }
 }
