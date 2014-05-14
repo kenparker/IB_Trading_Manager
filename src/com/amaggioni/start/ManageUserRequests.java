@@ -99,6 +99,7 @@ import java.util.List;
  * 29.06.2013 Start and Endtime for EOD Strategy
  * 12.07.2013 'Standard Error Bands' added
  * 09.08.2013 various 'lookback'period
+ * 16.04.2014 Logic trade submission changed
  * <p/>
  * <
  * p/>
@@ -373,17 +374,19 @@ public class ManageUserRequests extends ExampleBase
             RequestData rq = requestHash.get(to.getRequestId());
             double low = rq.getLow();
             double close = rq.getClose();
+            double pricediff = MyMath.round(Math.abs(to.getCheckPrice() - to.getOrderPrice()),2);
+            double closediff = MyMath.round(Math.abs(close - to.getCheckPrice()),2);
 
             // check strategy
-            if ((low != 0 && to.getCheckPrice() != 0
+            if ((   low != 0 && to.getCheckPrice() != 0
                     && to.getStopPrice() != 0
-                    && ((to.getCheckPrice() > low && to.getOrderPrice() > close) || to.getCheckPrice() == to.getOrderPrice())
+                    && (/*(Math.abs(to.getCheckPrice() - to.getOrderPrice()) != 0.01 && to.getCheckPrice() > low && to.getOrderPrice() > close) 
+                        || */ to.getCheckPrice() == to.getOrderPrice()
+                        || (pricediff == 0.01 && closediff <= 0.01 ))
                     && !to.isOrderSubmitted())
-                    && (to.getuserReqTyp().equals(TRADE)
-                    || to.getuserReqTyp().equals(DYNAMIC_TRADE)
-                    || to.getuserReqTyp().equals(EOD_TRADE))) {
+                    && (to.getuserReqTyp().equals(TRADE) || to.getuserReqTyp().equals(DYNAMIC_TRADE) || to.getuserReqTyp().equals(EOD_TRADE))) {
                 String outString = new Date() + " " + "[Info] [doTrades] [" + symbol + "] Low :" + low + " CheckPrice :"
-                        + to.getCheckPrice();
+                        + to.getCheckPrice() + " Close :" + close + " Diff :" + closediff;
                 WriteToFile.logAll(outString, symbol);
 
                 // Check whether the quantitty need to be calculated

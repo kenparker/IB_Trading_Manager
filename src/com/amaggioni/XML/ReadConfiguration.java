@@ -66,7 +66,7 @@ public class ReadConfiguration extends DefaultHandler
         // Parse each file provided on the
         // command line.
 
-        String file = "C:/Users/magang/Mediencenter/IB_API_Pro/myAPIRunner13_08_09/src/com/amaggioni/XML/Configuration.xml";
+        String file = "C:/Users/magang/Documents/Java_Uebungen/IB_API_Pro/myAPIRunner13_08_09/src/com/amaggioni/XML/Configuration.xml";
         FileReader r = new FileReader(file);
         xr.parse(new InputSource(r));
 
