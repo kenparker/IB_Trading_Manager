@@ -162,7 +162,7 @@ public class ManageUserRequests extends ExampleBase
     // LOGs Constants
     private boolean LOG_CANDLE = false;
     private boolean LOG_HISTORICALDATA = false;
-    private boolean LOG_REQHISTDATA = false;
+    private boolean LOG_REQHISTDATA = true;
     private boolean LOG_CONVERGENCE = false;
     private GregorianCalendar startdate;
     private int startHour = 12;
@@ -279,10 +279,10 @@ public class ManageUserRequests extends ExampleBase
 
         tradesHash.put(userReqNr,
                 new TradeOrder(symbol, userReqTyp, requestId, "BUY", quantity, checkPrice,
-                orderPrice,
-                stopPrice,
-                createContract(symbol, "STK", "SMART", "USD"), ocaGroup,
-                riskprotrade, stoptype, percentstop, parentUserReqNr));
+                        orderPrice,
+                        stopPrice,
+                        createContract(symbol, "STK", "SMART", "USD"), ocaGroup,
+                        riskprotrade, stoptype, percentstop, parentUserReqNr));
     }
 
     /**
@@ -296,8 +296,6 @@ public class ManageUserRequests extends ExampleBase
             int requestIdHst, String parentUserReqNr, String barsize, GregorianCalendar datex)
     {
 
-
-
         histReqHash.put(userReqNr, new RequestHistoricalMktDta(userReqTyp, userReqNr, symbol,
                 requestId, false,
                 barsize, // backfilldurationtime
@@ -309,7 +307,7 @@ public class ManageUserRequests extends ExampleBase
                 1,
                 "TRADES",
                 createContract(symbol,
-                "STK", "SMART", "USD"),
+                        "STK", "SMART", "USD"),
                 requestIdHst,
                 parentUserReqNr,
                 barsize,
@@ -370,21 +368,21 @@ public class ManageUserRequests extends ExampleBase
             String symbol = to.getSymbol();
 
             // read low / close
-
             RequestData rq = requestHash.get(to.getRequestId());
             double low = rq.getLow();
             double close = rq.getClose();
-            double pricediff = MyMath.round(Math.abs(to.getCheckPrice() - to.getOrderPrice()),2);
-            double closediff = MyMath.round(Math.abs(close - to.getCheckPrice()),2);
+            double pricediff = MyMath.round(Math.abs(to.getCheckPrice() - to.getOrderPrice()), 2);
+            double closediff = MyMath.round(Math.abs(close - to.getCheckPrice()), 2);
 
             // check strategy
-            if ((   low != 0 && to.getCheckPrice() != 0
+            if ((low != 0 && to.getCheckPrice() != 0
                     && to.getStopPrice() != 0
                     && (/*(Math.abs(to.getCheckPrice() - to.getOrderPrice()) != 0.01 && to.getCheckPrice() > low && to.getOrderPrice() > close) 
-                        || */ to.getCheckPrice() == to.getOrderPrice()
-                        || (pricediff == 0.01 && closediff <= 0.01 ))
+                     || */to.getCheckPrice() == to.getOrderPrice()
+                    || (pricediff == 0.01 && closediff <= 0.01))
                     && !to.isOrderSubmitted())
-                    && (to.getuserReqTyp().equals(TRADE) || to.getuserReqTyp().equals(DYNAMIC_TRADE) || to.getuserReqTyp().equals(EOD_TRADE))) {
+                    && (to.getuserReqTyp().equals(TRADE) || to.getuserReqTyp().equals(DYNAMIC_TRADE) || to.getuserReqTyp().equals(
+                            EOD_TRADE))) {
                 String outString = new Date() + " " + "[Info] [doTrades] [" + symbol + "] Low :" + low + " CheckPrice :"
                         + to.getCheckPrice() + " Close :" + close + " Diff :" + closediff;
                 WriteToFile.logAll(outString, symbol);
@@ -510,19 +508,15 @@ public class ManageUserRequests extends ExampleBase
                 //<editor-fold defaultstate="collapsed" desc="Hourly Historical Data">
                 if (histreq.getBarsize() != null && histreq.getBarsize().equals(x1_HOUR)) {
 
-
                     checkChannelConvergenceStrategy2(histreq, rqh, to);
 
-                    checkMACDLowStrategy1(histreq, rqh, to, parentUserReqNr);
-
-                    checkROCStrategy1(histreq, rqh, to, parentUserReqNr);
-
+                   // checkMACDLowStrategy1(histreq, rqh, to, parentUserReqNr);
+                    // checkROCStrategy1(histreq, rqh, to, parentUserReqNr);
                     checkAutoEnvelopeStrategy1(histreq, rqh, to);
 
-                    checkStandardErrorBandsStrategy1(histreq, rqh, to);
+                    //checkStandardErrorBandsStrategy1(histreq, rqh, to);
                 }
                 //</editor-fold>
-
 
                 //<editor-fold defaultstate="collapsed" desc="15 mins Historical Data">
                 if (histreq.getBarsize() != null && histreq.getBarsize().equals(x15_MINS)) {
@@ -545,7 +539,6 @@ public class ManageUserRequests extends ExampleBase
                 checkDate(histreq, userReqNr, requestIdHist);
 
             }
-
 
         }
     }
@@ -603,7 +596,6 @@ public class ManageUserRequests extends ExampleBase
         // Requests  market data
         eClientSocket.reqMktData(requestId, tradesHash.get(userReqNr).getContract(), "233", false);
 
-
     }
 
     /**
@@ -636,7 +628,6 @@ public class ManageUserRequests extends ExampleBase
         setHistoricalHashId(requestIdHst, symbol);
         reqHistData(requestIdHst, hr);
 
-
     }
 
     /**
@@ -651,18 +642,13 @@ public class ManageUserRequests extends ExampleBase
         // Request next requestId number
         int requestIdHst = RequestIDManager.singleton().getNextRequestId();
 
-
-
         RequestHistoricalMktDta hr = histReqHash.get(userReqNr);
         sethistReqHash(usrReqTyp, userReqNr, symbol, hr.getRequestId(), requestIdHst,
                 parentUserReqNr, barsize, datex);
 
-
         hr = histReqHash.get(userReqNr);
         setHistoricalHashId(requestIdHst, symbol);
         reqHistData(requestIdHst, hr);
-
-
 
     }
 
@@ -673,13 +659,10 @@ public class ManageUserRequests extends ExampleBase
     public void loop() throws InterruptedException
     {
 
-
         while (ReadConfiguration.getEndtime().compareTo(new GregorianCalendar()) > 0) {
 
             //while (true) {
-
             // System.out.println("[Debug] [loop] Thread Name: " + Thread.currentThread().getName());
-
             getQueue();
             // System.out.println("[listMarketData]" + waitCount);
 
@@ -695,8 +678,6 @@ public class ManageUserRequests extends ExampleBase
 
         // Cancel market data
         //   eClientSocket.cancelMktData(requestId);
-
-
     }
 
     /**
@@ -720,25 +701,22 @@ public class ManageUserRequests extends ExampleBase
                         + "[" + (rhmd.getBarsize() == null ? "null" : rhmd.getBarsize()) + "] "
                         //+ "[" + reqQuoHistHash.get(reqId). + "]"
                         + EWrapperMsgGenerator.historicalData(requestId,
-                        dequeueItem.getDate(),
-                        dequeueItem.getOpen(),
-                        dequeueItem.getHigh(), dequeueItem.getLow(), dequeueItem.getClose(),
-                        (int) dequeueItem.getVolume(),
-                        dequeueItem.getCount(), dequeueItem.getWAP(), false);
+                                dequeueItem.getDate(),
+                                dequeueItem.getOpen(),
+                                dequeueItem.getHigh(), dequeueItem.getLow(), dequeueItem.getClose(),
+                                (int) dequeueItem.getVolume(),
+                                dequeueItem.getCount(), dequeueItem.getWAP(), false);
 
                 if (!dequeueItem.getDate().startsWith("finished")) {
 
                     //System.out.println(outString);
-
                     //writeToFile(outString, this.reqQuoHistHash.get(reqId).getSymbol());
-
                     // String date, double open, double close, double high, double low,  double WAP, int count, double volume
                     this.reqQuoHistHash.get(requestId).addList(
                             dequeueItem.getDate(), dequeueItem.getOpen(),
                             dequeueItem.getClose(), dequeueItem.getHigh(), dequeueItem.getLow(),
                             dequeueItem.getWAP(), dequeueItem.getCount(), dequeueItem.getVolume());
                 } else {
-
 
                     //System.out.println(outString);
                     if (LOG_HISTORICALDATA) {
@@ -752,11 +730,9 @@ public class ManageUserRequests extends ExampleBase
                 }
                 //</editor-fold>
 
-
             }
             stopCondition = (hdcq.getQueueSize() == 0);
         }
-
 
         // Read current data concurrent queue
         stopCondition = (cdcq.getQueueSize() == 0);
@@ -825,7 +801,6 @@ public class ManageUserRequests extends ExampleBase
             eClientSocket.placeOrder(parent, to.getContract(), BuyOrder);
             to.setOrderIdParent(parent);
 
-
             // Stop at 50% of the planned stoploss
             double newstopprice = to.getStopPrice();
             //<editor-fold defaultstate="collapsed" desc="Stopprice / 2">
@@ -850,7 +825,6 @@ public class ManageUserRequests extends ExampleBase
                     + " StopPrice " + to.getStopPrice();
             WriteToFile.logAll(outString, to.getSymbol());
 
-
         } else {
             System.out.println("[Debug] [createOrderBracket] OrderID not initialized");
         }
@@ -868,7 +842,6 @@ public class ManageUserRequests extends ExampleBase
     public void generateRequestData() throws FileNotFoundException, IOException, InterruptedException
     {
 
-
         tradesCSV.getTrades();
         List<String[]> allElements = tradesCSV.getAllTrades();
 
@@ -881,7 +854,6 @@ public class ManageUserRequests extends ExampleBase
                     || s[0].equals(HOURLY_DATA)
                     || s[0].equals(DYNAMIC_TRADE)
                     || s[0].equals(EOD_TRADE)) && !s[2].equals("")) {
-
 
                 if (s[0].equals(TRADE)
                         || s[0].equals(BREAKOUT)
@@ -901,7 +873,6 @@ public class ManageUserRequests extends ExampleBase
                      * + " percstop  :" + s[10]
                      * + " parent  :" + s[11]);*/
 
-
                     rqstMktDtaTrade(
                             s[0],
                             s[1],
@@ -918,8 +889,6 @@ public class ManageUserRequests extends ExampleBase
 
                 }
 
-
-
                 if (s[0].equals(VOLUME_CHECK) || s[0].equals(HOURLY_DATA)) {
                     /*System.out.println(
                      * "Req. Type :" + s[0]
@@ -934,7 +903,6 @@ public class ManageUserRequests extends ExampleBase
                             s[12],
                             startdate);
                 }
-
 
             }
 
@@ -984,14 +952,12 @@ public class ManageUserRequests extends ExampleBase
     public void tickPrice(int tickerId, int field, double price, int canAutoExecute)
     {
 
-
         //System.out.println("[Debug] [tickPrice] Thread Name: " + Thread.currentThread().getName() + " lock :" + Thread.holdsLock(requestHash));
-
         String outString;
         outString = new Date() + " [Fine] [API.tickPrice] "
                 + "[" + this.requestHash.get(tickerId).getSymbol() + "] "
                 + EWrapperMsgGenerator.tickPrice(tickerId, field, price,
-                canAutoExecute);
+                        canAutoExecute);
 
         CurrDataPriceBar currData = new CurrDataPriceBar(tickerId, field, price, canAutoExecute);
         cdcq.enqueueItem(currData);
@@ -1032,7 +998,6 @@ public class ManageUserRequests extends ExampleBase
                     field, size));
 
         }
-
 
     }
 
@@ -1079,18 +1044,16 @@ public class ManageUserRequests extends ExampleBase
         //HistoryRequest histreq = histReqHash.get(this.reqQuoHistHash.get(reqId).getSymbol());
 
         /*String outString = new Date() + " [Fine] [API.historicalData ] "
-         * + "[" + this.reqQuoHistHash.get(reqId).getSymbol() + "] "
-         * //+ "[" + reqQuoHistHash.get(reqId). + "]"
-         * + EWrapperMsgGenerator.historicalData(reqId, date, open,
-         * high, low, close,
-         * volume,
-         * count, WAP, hasGaps);
-         * System.out.println(outString);*/
+         + "[" + this.reqQuoHistHash.get(reqId).getSymbol() + "] "
+         //+ "[" + reqQuoHistHash.get(reqId). + "]"
+         + EWrapperMsgGenerator.historicalData(reqId, date, open,
+         high, low, close,
+         volume,
+         count, WAP, hasGaps);
+         System.out.println(outString);*/
         // add Historical Data to Queue
         ReqIdPriceBar rq = new ReqIdPriceBar(reqId, date, open, close, high, low, WAP, count, volume);
         hdcq.enqueueItem(rq);
-
-
 
     }
 
@@ -1171,8 +1134,6 @@ public class ManageUserRequests extends ExampleBase
                     sd.symboldataToLog(methodname, symbol);
                 }
 
-
-
                 cs.CongestionToPrint(methodname, symbol);
 
             }
@@ -1217,18 +1178,21 @@ public class ManageUserRequests extends ExampleBase
 
             QuoteDB.setQuotes(histreq, to, rqh);
 
-            String methodname = "checkChannelConvergenceStrategy2";
-            RequestData rq = requestHash.get(histreq.getRequestId());
+            // Following part will never be executed, I just want to have the db update, reformat later
+            if (false) {
+                String methodname = "checkChannelConvergenceStrategy2";
+                RequestData rq = requestHash.get(histreq.getRequestId());
 
-            checkCandles(methodname, histreq.getSymbol(), rqh);
+                checkCandles(methodname, histreq.getSymbol(), rqh);
 
-            if (to != null && to.getCheckPrice() == 0) {
-                //System.out.println(rqh.toStringx(2)); // Print the last 10 quotes to check
+                if (to != null && to.getCheckPrice() == 0) {
+                    //System.out.println(rqh.toStringx(2)); // Print the last 10 quotes to check
 
-                ChannelConvergenceStrategy2 cc = new ChannelConvergenceStrategy2(rqh);
+                    ChannelConvergenceStrategy2 cc = new ChannelConvergenceStrategy2(rqh);
 
-                cc.evalStrategy(26, to, rqh, rq);
+                    cc.evalStrategy(26, to, rqh, rq);
 
+                }
             }
 
             rqh.setConvergencestrategy2(true);
@@ -1292,7 +1256,6 @@ public class ManageUserRequests extends ExampleBase
                 lookbackperiod = 420;
                 executeROCStrategy(lookbackperiod, totalquotes, roc, histreq, to, rqh);
 
-
             }
 
             rqh.setROCStrategy1(true);
@@ -1305,7 +1268,6 @@ public class ManageUserRequests extends ExampleBase
         if (histreq.getParentUserReqNr() != null && !histreq.getParentUserReqNr().equals("")
                 && !rqh.isDynamictradestrategy1()) {
             String methodname = "checkDynamicTradeStrategy1";
-
 
             if (to != null && to.getQuantity() == 0) {
                 DynamicTradeStrategy1.evalStrategy(to, rqh);
@@ -1374,18 +1336,15 @@ public class ManageUserRequests extends ExampleBase
                  * fromdate.set(fromdate.get(Calendar.YEAR), fromdate.get(Calendar.MONTH),
                  * fromdate.get(Calendar.DAY_OF_MONTH),
                  * 20, 29, 59);*/
-
                 GregorianCalendar fromdate = ReadConfiguration.getEODStarttime();
 
                 /*GregorianCalendar todate = new GregorianCalendar();
                  * todate.set(todate.get(Calendar.YEAR), todate.get(Calendar.MONTH),
                  * todate.get(Calendar.DAY_OF_MONTH),
                  * 21, 59, 59);*/
-
                 GregorianCalendar todate = ReadConfiguration.getEODEndtime();
 
                 //</editor-fold>
-
                 eodbv.evalStrategy(fromdate, todate, to, rqh, rq);
 
             }
@@ -1406,7 +1365,6 @@ public class ManageUserRequests extends ExampleBase
         final RequestData rd = requestHash.get(histreq.getRequestId());
 
         // not yet convergence
-
         if (!rqh.isConvergencestrategy() && sd != null && sd.getCheckPrice() == 0) {
             //<editor-fold defaultstate="collapsed" desc="Check convergence">
 
@@ -1465,7 +1423,7 @@ public class ManageUserRequests extends ExampleBase
         if (histreq.getNexthours() != null) {
             if (histreq.getNexthours().compareTo(gc) < 0) {
 
-                //logNexthours(symbol, df, histreq);
+                logNexthours(histreq.getSymbol(), df, histreq);
 
                 updMktDtaHourly(histreq.getUserReqType(), userReqNr, histreq.getSymbol(),
                         histreq.getParentUserReqNr(), histreq.getBarsize(), histreq.getNexthours());
@@ -1514,7 +1472,6 @@ public class ManageUserRequests extends ExampleBase
 
             cp.toPrintBearishCandles(methodname, symbol, NumberOfCandles);
         }
-
 
     }
 
