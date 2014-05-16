@@ -100,6 +100,7 @@ import java.util.List;
  * 12.07.2013 'Standard Error Bands' added
  * 09.08.2013 various 'lookback'period
  * 16.04.2014 Logic trade submission changed
+ * 16.05.2014 Logs tuned to show logs only from one symbol
  * <p/>
  * <
  * p/>
@@ -161,9 +162,10 @@ public class ManageUserRequests extends ExampleBase
     CurrDataConcQueue cdcq;
     // LOGs Constants
     private boolean LOG_CANDLE = false;
-    private boolean LOG_HISTORICALDATA = false;
+    private boolean LOG_HISTORICALDATA = true;
     private boolean LOG_REQHISTDATA = true;
     private boolean LOG_CONVERGENCE = false;
+    private String LOG_SYMBOL = "SPY";
     private GregorianCalendar startdate;
     private int startHour = 12;
     private int startMinute = 15;
@@ -510,7 +512,7 @@ public class ManageUserRequests extends ExampleBase
 
                     checkChannelConvergenceStrategy2(histreq, rqh, to);
 
-                   // checkMACDLowStrategy1(histreq, rqh, to, parentUserReqNr);
+                    // checkMACDLowStrategy1(histreq, rqh, to, parentUserReqNr);
                     // checkROCStrategy1(histreq, rqh, to, parentUserReqNr);
                     checkAutoEnvelopeStrategy1(histreq, rqh, to);
 
@@ -718,10 +720,10 @@ public class ManageUserRequests extends ExampleBase
                             dequeueItem.getWAP(), dequeueItem.getCount(), dequeueItem.getVolume());
                 } else {
 
+                    final RequestQuotesHistorical rqh = this.reqQuoHistHash.get(requestId);
+                    final String symbol = rqh.getSymbol();
                     //System.out.println(outString);
-                    if (LOG_HISTORICALDATA) {
-                        final RequestQuotesHistorical rqh = this.reqQuoHistHash.get(requestId);
-                        final String symbol = rqh.getSymbol();
+                    if (LOG_HISTORICALDATA && symbol.equals(LOG_SYMBOL)) {
                         WriteToFile.writeF(rqh.toStringx(1), symbol);
                         WriteToFile.writeF(outString, symbol);
                     }
@@ -1420,16 +1422,19 @@ public class ManageUserRequests extends ExampleBase
         // generate current date
         SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         GregorianCalendar gc = new GregorianCalendar();
+        final String symbol = histreq.getSymbol();
         if (histreq.getNexthours() != null) {
             if (histreq.getNexthours().compareTo(gc) < 0) {
 
-                logNexthours(histreq.getSymbol(), df, histreq);
+                if (LOG_REQHISTDATA && symbol.equals(LOG_SYMBOL)) {
+                    logNexthours(symbol, df, histreq);
+                }
 
-                updMktDtaHourly(histreq.getUserReqType(), userReqNr, histreq.getSymbol(),
+                updMktDtaHourly(histreq.getUserReqType(), userReqNr, symbol,
                         histreq.getParentUserReqNr(), histreq.getBarsize(), histreq.getNexthours());
             }
         } else {
-            logCheckDateError(histreq, requestIdHist, histreq.getSymbol());
+            logCheckDateError(histreq, requestIdHist, symbol);
         }
     }
 
@@ -1491,7 +1496,7 @@ public class ManageUserRequests extends ExampleBase
 
     private void logreqHistData(int requestIdHst, RequestHistoricalMktDta hr)
     {
-        if (LOG_REQHISTDATA) {
+        if (LOG_REQHISTDATA && hr.getSymbol().equals(LOG_SYMBOL)) {
             StringBuffer sb = new StringBuffer();
 
             sb.append(new Date());
