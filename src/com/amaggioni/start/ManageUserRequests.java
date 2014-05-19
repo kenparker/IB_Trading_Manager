@@ -163,7 +163,7 @@ public class ManageUserRequests extends ExampleBase
     // LOGs Constants
     private boolean LOG_CANDLE = false;
     private boolean LOG_HISTORICALDATA = true;
-    private boolean LOG_REQHISTDATA = true;
+    private boolean LOG_REQHISTDATA = false;
     private boolean LOG_CONVERGENCE = false;
     private String LOG_SYMBOL = "SPY";
     private GregorianCalendar startdate;
