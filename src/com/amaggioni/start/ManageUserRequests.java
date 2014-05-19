@@ -511,9 +511,11 @@ public class ManageUserRequests extends ExampleBase
                 if (histreq.getBarsize() != null && histreq.getBarsize().equals(x1_HOUR)) {
 
                     checkChannelConvergenceStrategy2(histreq, rqh, to);
-
                     // checkMACDLowStrategy1(histreq, rqh, to, parentUserReqNr);
                     // checkROCStrategy1(histreq, rqh, to, parentUserReqNr);
+
+                    //checkMACDLowStrategy1(histreq, rqh, to, parentUserReqNr);
+                    //checkROCStrategy1(histreq, rqh, to, parentUserReqNr);
                     checkAutoEnvelopeStrategy1(histreq, rqh, to);
 
                     //checkStandardErrorBandsStrategy1(histreq, rqh, to);
