@@ -44,7 +44,7 @@ public class QuoteDB
     public static void addQuotes(RequestHistoricalMktDta histreq, TradeOrder to,
             RequestQuotesHistorical m_qh)
     {
-        try {
+        
             factory = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
             EntityManager em = factory.createEntityManager();
             
@@ -72,9 +72,7 @@ public class QuoteDB
             stse.addQuotesList(em, st, histreq.getBarsize(), m_qh.getQh().getAll());
             
             em.close();
-        } catch (IOException ex) {
-            Logger.getLogger(QuoteDB.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        
     }
     
     public static void setQuotes(RequestHistoricalMktDta histreq, TradeOrder to,
