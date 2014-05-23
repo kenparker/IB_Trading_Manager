@@ -1,3 +1,9 @@
 /nbproject/private/
 /build/
 /dist/
+*.jar
+*.war
+*.ear
+build.xml
+nbproject/*.*
+nbproject/project.properties

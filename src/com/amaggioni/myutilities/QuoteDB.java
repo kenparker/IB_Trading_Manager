@@ -9,11 +9,6 @@ import Service.StockService;
 import com.amaggioni.datastructure.RequestHistoricalMktDta;
 import com.amaggioni.datastructure.RequestQuotesHistorical;
 import com.amaggioni.datastructure.TradeOrder;
-import core.PriceBar;
-import java.io.IOException;
-import java.util.Iterator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -72,6 +67,7 @@ public class QuoteDB
             stse.addQuotesList(em, st, histreq.getBarsize(), m_qh.getQh().getAll());
             
             em.close();
+            
         
     }
     
