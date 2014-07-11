@@ -137,12 +137,12 @@ public class AutoEnvelope extends Indicator
 
         for (int i = this.qhsize - period -1; i < this.qhsize; i++) {
             if (this.isNearEnvelope(i)) {
-                logNearEnvelope(i);
+                //logNearEnvelope(i);
                 log2(i);
-                String outString = WriteToFile.msgHeaderBld("Fine", "AutoEnvelope", getSymbol(),
+                /*String outString = WriteToFile.msgHeaderBld("Fine", "AutoEnvelope", getSymbol(),
                 getBarsize(), this.getLookbackperiod()) +
                 this.qh.toStringOneBar(i);
-                WriteToFile.logAll(outString, getSymbol());
+                WriteToFile.logAll(outString, getSymbol());*/
             }
             
 
@@ -333,15 +333,16 @@ public class AutoEnvelope extends Indicator
 
         String outString = WriteToFile.msgHeaderBld("Fine", "AutoEnvelope", getSymbol(),
                 getBarsize(),this.getLookbackperiod())
+                + " % b :" + this.percBEnv(index)
                 + " factor :" + MyMath.round(this.evelopefactor[index], 3)
                 + " % in Envelope :" + MyMath.round(this.envelopepercent[index], 2)
                 + " Envelope High :" + MyMath.round(this.envelopehigh[index], 2)
                 + " Envelope Low :" + MyMath.round(this.envelopelow[index], 2)
-                + " % b :" + this.percBEnv(index)
                 + this.qh.toStringOneBar(index);
         
 
-        WriteToFile.logAll(outString, "AutoEnvelope");
+        WriteToFile.logAll(outString, getSymbol());
+        WriteToFile.writeF(outString, "AutoEnvelope");
 
     }
 }
